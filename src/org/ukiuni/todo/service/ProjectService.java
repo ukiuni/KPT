@@ -25,9 +25,8 @@ public class ProjectService {
 			transaction.begin();
 			Project registedProject = em.find(Project.class, project.getId());
 			List<Todo> registedTodo = registedProject.getTodos();
-			// TODO not moved
-			// new TodoService().merge(project.getTodos(), registedTodo);
-			// registedProject.setTodos(project.getTodos());
+			new TodoService().merge(project.getTodos(), registedTodo);
+			registedProject.setTodos(project.getTodos());
 			registedProject.setName("testName");
 			em.merge(registedProject);
 			transaction.commit();

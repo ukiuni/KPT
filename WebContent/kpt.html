@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html ng-app="sortableApp">
+<html ng-app="sortableApp" ng-controller="myController">
 <head>
 <meta charset="UTF-8">
-<title>{{project.name}}</title>
+<title ng-model="projectName">{{projectName}}</title>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
@@ -127,8 +127,10 @@
 			if (!$scope.projectKey) {
 				$scope.error = "project not defined";
 			}
-			$http.get('api/todo?project_key=' + $scope.projectKey).success(function(data, status, headers, config) {
-				$scope.todos = data;
+			$http.get('api/todo?project_key=' + $scope.projectKey).success(function(project, status, headers, config) {
+				console.log("getTodo = " + project.projectName);
+				$scope.todos = project.todos;
+				$scope.projectName = project.projectName;
 			}).error(function(data, status, headers, config) {
 				$scope.error = "Load error";
 			});
@@ -143,6 +145,9 @@
 				});
 			}
 			$scope.saveTodo = myController.saveTodo;
+			$scope.$watch(function() {
+				return $scope.todos;
+			}, $scope.saveTodo);
 			$scope.dump = function() {
 				console.log("dump = " + JSON.stringify($scope.todos));
 			}

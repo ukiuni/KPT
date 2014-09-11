@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -87,7 +86,7 @@ public class TodoAction {
 	@SuppressWarnings("unchecked")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<ArrayList<Todo>> loadTodo(@QueryParam("project_key") String projectKey) {
+	public ProjectListedDto loadTodo(@QueryParam("project_key") String projectKey) {
 		Project project = projectService.load(projectKey);
 		if (project == null) {
 			throw new NotFoundException();
@@ -101,7 +100,18 @@ public class TodoAction {
 				todos.get(statusIndex).add(todo);
 			}
 		}
-		return todos;
+		ProjectListedDto dto = new ProjectListedDto();
+		dto.projectKey = project.getKey();
+		dto.projectName = project.getName();
+		dto.todos = todos;
+		return dto;
+	}
+
+	public static class ProjectListedDto {
+		public String projectKey;
+		public String projectName;
+		public List<ArrayList<Todo>> todos;
+		
 	}
 
 	public static class ProjectDto {
